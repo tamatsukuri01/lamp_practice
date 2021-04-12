@@ -22,7 +22,7 @@ function get_item($db, $item_id){
   return fetch_query($db, $sql,[$item_id]);
 }
 
-function get_items($db, $is_open = false){
+function get_items($db,$is_open = false){
   $sql = '
     SELECT
       item_id, 
@@ -40,7 +40,7 @@ function get_items($db, $is_open = false){
     ';
   }
 
-  return fetch_all_query($db, $sql,[1]);
+  return fetch_all_query($db, $sql);
 }
 
 function get_all_items($db){
