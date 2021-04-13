@@ -18,14 +18,13 @@ $db = get_db_connect();
 
 $user = login_as($db, $name, $password);
 
-
+if(is_valid_csrf_token($token)) {
 if( $user === false){
   set_error('ログインに失敗しました。');
   redirect_to(LOGIN_URL);
 }
 
 set_message('ログインしました。');
-if(is_valid_csrf_token($token)) {
 if ($user['type'] === USER_TYPE_ADMIN){
   redirect_to(ADMIN_URL);
 }
