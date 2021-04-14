@@ -15,9 +15,7 @@ $token = get_post('token');
 
 $db = get_db_connect();
 
-
 $user = login_as($db, $name, $password);
-
 
 if ($user === false) {
   set_error('ログインに失敗しました。');
