@@ -76,6 +76,31 @@ function insert_cart($db, $user_id, $item_id, $amount = 1){
   return execute_query($db, $sql,[$item_id, $user_id, $amount]);
 }
 
+function insert_orders($db,$user_id,$datetime) {
+  $sql = "
+    INSERT INTO
+      orders(
+        user_id ,
+        order_datetime
+      )
+    VALUES(?,?)
+    ";
+
+    return execute_query($db,$sql,[$user_id,$datetime]);
+}
+
+function insert_order_datails($db,$order_number,$item_id,$amount,$price) {
+$sql = "
+INSERT INTO
+order_datails(
+  order_number ,
+  item_id ,
+  amount ,
+  price
+  ";
+  return execute_query($db,$sql,[$order_number,$item_id,$amount,$price]);
+}
+
 function update_cart_amount($db, $cart_id, $amount){
   $sql = "
     UPDATE
