@@ -143,9 +143,7 @@ function purchase_carts($db, $carts)
   }
   //トランザクション開始
   $db->beginTransaction();
-  //現在時刻取得
-  $datetime = date('Y-m-d H:i:s');
-
+  
   try {
     foreach ($carts as $cart) {
       //在庫数更新処理
@@ -157,6 +155,8 @@ function purchase_carts($db, $carts)
         set_error($cart['name'] . 'の購入に失敗しました。');
       }
     }
+    //現在時刻取得
+  $datetime = date('Y-m-d H:i:s');
     //購入履歴インサート
     insert_orders($db, $carts[0]['user_id'], $datetime);
     //上記でインサートしたオーダーナンバー取得
