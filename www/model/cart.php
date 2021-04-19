@@ -79,35 +79,6 @@ function insert_cart($db, $user_id, $item_id, $amount = 1)
   return execute_query($db, $sql, [$item_id, $user_id, $amount]);
 }
 
-function insert_orders($db, $user_id, $datetime)
-{
-  $sql = "
-    INSERT INTO
-      orders(
-        user_id ,
-        order_datetime
-      )
-    VALUES(?,?)
-    ";
-
-  return execute_query($db, $sql, [$user_id, $datetime]);
-}
-
-function insert_order_details($db, $order_number, $item_id, $amount, $price)
-{
-  $sql = "
-  INSERT INTO
-    order_details(
-      order_number ,
-      item_id ,
-      amount ,
-      price
-    )
-  VALUES(?,?,?,?)
-  ";
-  return execute_query($db, $sql, [$order_number, $item_id, $amount, $price]);
-}
-
 function update_cart_amount($db, $cart_id, $amount)
 {
   $sql = "
@@ -137,14 +108,11 @@ function delete_cart($db, $cart_id)
 
 function purchase_carts($db, $carts)
 {
-
   if (validate_cart_purchase($carts) === false) {
     return false;
   }
   //トランザクション開始
   $db->beginTransaction();
-  
-  try {
     foreach ($carts as $cart) {
       //在庫数更新処理
       if (update_item_stock(
@@ -155,24 +123,69 @@ function purchase_carts($db, $carts)
         set_error($cart['name'] . 'の購入に失敗しました。');
       }
     }
-    //現在時刻取得
-  $datetime = date('Y-m-d H:i:s');
-    //購入履歴インサート
-    insert_orders($db, $carts[0]['user_id'], $datetime);
-    //上記でインサートしたオーダーナンバー取得
-    $order_number = $db->lastInsertId('order_number');
-    foreach ($carts as $cart) {
-      //購入明細インサート
-      insert_order_details($db, $order_number, $cart['item_id'], $cart['amount'], $cart['price']);
+    if(register_orders($db,$carts) === false) {
+      set_error( '購入に失敗しました。');
     }
     //カート内アイテム削除
-    delete_user_carts($db, $carts[0]['user_id']);
+    if(delete_user_carts($db, $carts[0]['user_id']) === false) {
+      set_error('購入に失敗しました。');
+    }
+    if(has_error() !== true) {
+      $db->commit();
+      return true;
+    }
+      $db->rollback();
+      return false; 
+}
 
-    $db->commit();
-  } catch (PDOException $e) {
-    $db->rollback();
-    throw $e->getMessage();
+function register_orders($db,$carts) {
+  //購入履歴インサート関数
+  if(insert_orders($db, $carts[0]['user_id']) === false) {
+    set_error('購入に失敗しました。');
   }
+  //上記でインサートしたオーダーナンバー取得
+  $order_number = $db->lastInsertId('order_number');
+  foreach ($carts as $cart) {
+    //購入明細インサート関数
+    if(insert_order_details(
+      $db, $order_number,
+      $cart['item_id'], $cart['amount'], $cart['price']) === false) {
+        set_error('購入に失敗しました。');
+      }
+  }
+  if(has_error() === true) {
+    return false;
+  }
+  return true;
+}
+
+//購入履歴インサート
+function insert_orders($db, $user_id)
+{
+  $sql = "
+    INSERT INTO
+      orders(
+        user_id 
+      )
+    VALUES(?)
+    ";
+
+  return execute_query($db, $sql, [$user_id]);
+}
+
+function insert_order_details($db, $order_number, $item_id, $amount, $price)
+{
+  $sql = "
+  INSERT INTO
+    order_details(
+      order_number ,
+      item_id ,
+      amount ,
+      price
+    )
+  VALUES(?,?,?,?)
+  ";
+  return execute_query($db, $sql, [$order_number, $item_id, $amount, $price]);
 }
 
 function delete_user_carts($db, $user_id)
