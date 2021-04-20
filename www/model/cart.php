@@ -141,7 +141,8 @@ function purchase_carts($db, $carts)
 function register_orders($db,$carts) {
   //購入履歴インサート関数
   if(insert_orders($db, $carts[0]['user_id']) === false) {
-    set_error('購入に失敗しました。');
+    set_error('購入履歴の作成に失敗しました。');
+    return false;
   }
   //上記でインサートしたオーダーナンバー取得
   $order_number = $db->lastInsertId('order_number');
@@ -150,7 +151,7 @@ function register_orders($db,$carts) {
     if(insert_order_details(
       $db, $order_number,
       $cart['item_id'], $cart['amount'], $cart['price']) === false) {
-        set_error('購入に失敗しました。');
+        set_error($cart['name'].'の購入明細の作成に失敗しました。');
       }
   }
   if(has_error() === true) {
@@ -159,20 +160,21 @@ function register_orders($db,$carts) {
   return true;
 }
 
-//購入履歴インサート
+//購入履歴インサート関数
 function insert_orders($db, $user_id)
 {
   $sql = "
     INSERT INTO
       orders(
-        user_id 
+        user_id ,
+        order_datetime
       )
-    VALUES(?)
+    VALUES(?, now())
     ";
 
   return execute_query($db, $sql, [$user_id]);
 }
-
+//購入明細のインサート関数
 function insert_order_details($db, $order_number, $item_id, $amount, $price)
 {
   $sql = "
