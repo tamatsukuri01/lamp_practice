@@ -106,6 +106,18 @@ function delete_cart($db, $cart_id)
   return execute_query($db, $sql, [$cart_id]);
 }
 
+function get_orders($db,$is_open = false)
+{
+  $sql = "
+    SELECT orders.order_number, order_datetime, sum(amount * price)
+    FROM orders
+    INNER JOIN order_details 
+    on orders.order_number = order_details.order_number
+    GROUP BY orders.order_number
+  ";
+  return fetch_all_query($db,$sql);
+  
+}
 function purchase_carts($db, $carts)
 {
   if (validate_cart_purchase($carts) === false) {
