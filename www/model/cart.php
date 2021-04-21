@@ -106,18 +106,39 @@ function delete_cart($db, $cart_id)
   return execute_query($db, $sql, [$cart_id]);
 }
 
-function get_orders($db,$is_open = false)
+function get_orders($db,$user_id)
 {
   $sql = "
-    SELECT orders.order_number, order_datetime, sum(amount * price)
+    SELECT orders.order_number,user_id, order_datetime, sum(amount * price) as total_price
+    FROM orders
+    INNER JOIN order_details 
+    on orders.order_number = order_details.order_number
+    WHERE user_id = $user_id
+    GROUP BY orders.order_number
+    ORDER BY orders.order_number DESC
+  ";
+  if($user_id === true) {
+    $sql = "
+    SELECT orders.order_number,user_id, order_datetime, sum(amount * price) as total_price
     FROM orders
     INNER JOIN order_details 
     on orders.order_number = order_details.order_number
     GROUP BY orders.order_number
-  ";
+    ORDER BY orders.order_number DESC
+    ";
+  }
+
   return fetch_all_query($db,$sql);
-  
 }
+
+function get_all_orders($db) {
+  return get_orders($db,true);
+}
+
+function get_user_orders($db,$user_id) {
+  return get_orders($db,$user_id);
+}
+
 function purchase_carts($db, $carts)
 {
   if (validate_cart_purchase($carts) === false) {
