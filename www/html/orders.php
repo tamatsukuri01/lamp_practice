@@ -21,16 +21,6 @@ if(is_admin($user) === true){
   $orders = get_user_orders($db,$user['user_id']);  
 }
   
-
-  
-
-  
-
-  
-
-  
-
-
 $token = get_csrf_token();
 
 include_once VIEW_PATH . '/orders_view.php';

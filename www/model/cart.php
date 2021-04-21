@@ -109,7 +109,11 @@ function delete_cart($db, $cart_id)
 function get_orders($db,$user_id)
 {
   $sql = "
-    SELECT orders.order_number,user_id, order_datetime, sum(amount * price) as total_price
+    SELECT 
+    orders.order_number ,
+    user_id , 
+    order_datetime, 
+    sum(amount * price) as total_price
     FROM orders
     INNER JOIN order_details 
     on orders.order_number = order_details.order_number
@@ -119,7 +123,11 @@ function get_orders($db,$user_id)
   ";
   if($user_id === true) {
     $sql = "
-    SELECT orders.order_number,user_id, order_datetime, sum(amount * price) as total_price
+    SELECT 
+    orders.order_number ,
+    user_id ,
+    order_datetime , 
+    sum(amount * price) as total_price
     FROM orders
     INNER JOIN order_details 
     on orders.order_number = order_details.order_number
@@ -138,6 +146,39 @@ function get_all_orders($db) {
 function get_user_orders($db,$user_id) {
   return get_orders($db,$user_id);
 }
+
+function get_order_details($db,$order_number) {
+  $sql = "
+    SELECT 
+    name ,
+    order_details.price ,
+    order_details.amount 
+    FROM order_details 
+    INNER JOIN items
+    on order_details.item_id = items.item_id
+    INNER JOIN orders
+    on order_details.order_number = orders.order_number
+    WHERE order_details.order_number = ?
+    ";
+
+  return fetch_all_query($db,$sql,[$order_number]);
+}
+
+function get_order_record($db,$order_number) {
+  $sql = "
+    SELECT 
+    orders.order_number ,
+    order_datetime , 
+    sum(amount * price) as total_price
+    FROM orders
+    INNER JOIN order_details 
+    on orders.order_number = order_details.order_number
+    WHERE orders.order_number = $order_number
+    ";
+
+    return fetch_all_query($db,$sql);
+}
+
 
 function purchase_carts($db, $carts)
 {
