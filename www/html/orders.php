@@ -16,9 +16,19 @@ $db = get_db_connect();
 $user = get_login_user($db);
 
 if(is_admin($user) === true){
-  $orders = get_all_orders($db);
+  if(get_orders($db) === false) {
+    set_error('購入履歴の取得に失敗しました。');
+  } else {
+    $orders = get_orders($db);
+  }
+  
 } else {
-  $orders = get_user_orders($db,$user['user_id']);  
+  if(get_orders($db,$user['user_id']) === false) {
+    set_error('購入履歴の取得に失敗しました。');
+  } else {
+    $orders = get_orders($db,$user['user_id']);
+  }
+    
 }
   
 $token = get_csrf_token();
