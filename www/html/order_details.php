@@ -20,27 +20,23 @@ $token = get_post('token');
 if (is_valid_csrf_token($token)) {
 
   if(is_admin($user) === true) {
-  if(get_order_details($db,$order_number) === false) {
-     set_error('購入明細の取得に失敗しました');
-   } else {
     $details = get_order_details($db,$order_number);
+  if($details === false) {
+     set_error('購入明細の取得に失敗しました'); 
    }
-  if(get_order_record($db,$order_number) === false) {
+   $records = get_order_record($db,$order_number);
+  if($records=== false) {
       set_error('購入履歴の取得に失敗しました');
-    } else {
-      $records = get_order_record($db,$order_number);
     }
     
   } else {
-    if(get_order_details($db,$order_number,$user['user_id']) === false) {
+    $details = get_order_details($db,$order_number,$user['user_id']);
+    if($details === false) {
       set_error('購入明細の取得に失敗しました');
-    } else {
-      $details = get_order_details($db,$order_number,$user['user_id']);
     }
-    if(get_order_record($db,$order_number,$user['user_id']) === false) {
+    $records = get_order_record($db,$order_number,$user['user_id']);
+    if($records === false) {
       set_error('購入履歴の取得に失敗しました');
-    } else {
-      $records = get_order_record($db,$order_number,$user['user_id']);
     }
   }
 

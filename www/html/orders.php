@@ -16,17 +16,15 @@ $db = get_db_connect();
 $user = get_login_user($db);
 
 if(is_admin($user) === true){
-  if(get_orders($db) === false) {
+  $orders = get_orders($db);
+  if($orders === false) {
     set_error('購入履歴の取得に失敗しました。');
-  } else {
-    $orders = get_orders($db);
   }
   
 } else {
-  if(get_orders($db,$user['user_id']) === false) {
-    set_error('購入履歴の取得に失敗しました。');
-  } else {
-    $orders = get_orders($db,$user['user_id']);
+  $orders = get_orders($db,$user['user_id']);
+  if($orders === false) {
+    set_error('購入履歴の取得に失敗しました。');   
   }
     
 }

@@ -130,7 +130,7 @@ function get_orders($db,$user_id = null)
   if($user_id !== null) {
     return fetch_all_query($db,$sql,[$user_id]); 
   }
-     return fetch_all_query($db,$sql,[]);
+     return fetch_all_query($db,$sql);
 }
 
 
