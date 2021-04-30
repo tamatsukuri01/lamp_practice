@@ -39,14 +39,14 @@ function get_items($db, $is_open = false, $sort = null)
   ';
   if ($is_open === true) {
     $sql .= '
-      WHERE status = 1
+      WHERE status = 1   
     ';
   }
-  if ($sort === 'new') {
-    $sql .= '
-      ORDER BY created DESC
+  if($sort === 'new' || $sort === '') {
+    $sql .='
+    ORDER BY created DESC
     ';
-  }
+  } 
   if ($sort === 'cheap') {
     $sql .= '
     ORDER BY price ASC
@@ -66,14 +66,9 @@ function get_all_items($db)
   return get_items($db);
 }
 
-function get_open_items($db)
+function get_open_items($db,$sort)
 {
-  return get_items($db, true);
-}
-
-function get_sort_items($db, $sort)
-{
-  return get_items($db, true, $sort);
+  return get_items($db, true,$sort);
 }
 
 function regist_item($db, $name, $price, $stock, $status, $image)
