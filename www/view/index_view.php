@@ -11,9 +11,20 @@
   
 
   <div class="container">
-    <h1>商品一覧</h1>
-    <?php include VIEW_PATH . 'templates/messages.php'; ?>
+    <div class="col-12 clearfix">
+      <h1 class="float-left">商品一覧</h1>
+      <form action="index.php" method="get" class="float-right">
+        <select name="sort">
+          <option value="new" <?php if((isset($sort)) && $sort === "new") {echo 'selected' ;} ?>>新着順</option>
+          <option value="cheap" <?php if((isset($sort)) && $sort === "cheap") {echo 'selected' ;} ?>>価格が安い順</option>
+          <option value="high" <?php if((isset($sort)) && $sort === "high") {echo 'selected' ;} ?>>価格が高い順</option>
+        </select>
+        <input type="submit" value="並べ替え">
+      </form>
+    </div>
 
+    <?php include VIEW_PATH . 'templates/messages.php'; ?>
+    
     <div class="card-deck">
       <div class="row">
       <?php foreach($items as $item){ ?>
