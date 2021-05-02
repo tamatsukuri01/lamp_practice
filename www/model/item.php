@@ -71,6 +71,37 @@ function get_open_items($db,$sort)
   return get_items($db, true,$sort);
 }
 
+function get_ranking_item($db) 
+{
+  $sql ='
+  SELECT
+    order_details.item_id ,
+    sum(amount) ,
+    items.item_id ,
+    items.name ,
+    items.price ,
+    items.status ,
+    items.stock
+  FROM
+    order_details
+  INNER JOIN
+    items
+  on 
+    order_details.item_id = items.item_id
+  WHERE 
+    items.status = 1
+  GROUP BY 
+    order_details.item_id
+  ORDER BY 
+    sum(amount) DESC
+  LIMIT 3
+  ';
+
+  return fetch_all_query($db,$sql);
+
+}
+
+
 function regist_item($db, $name, $price, $stock, $status, $image)
 {
   $filename = get_upload_filename($image);

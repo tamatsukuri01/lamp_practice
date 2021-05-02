@@ -17,6 +17,8 @@ $sort = get_get('sort');
 
 $items = get_open_items($db, $sort);
 
+$rankings = get_ranking_item($db);
+
 $token = get_csrf_token();
 
 include_once VIEW_PATH . 'index_view.php';
