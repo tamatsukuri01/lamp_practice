@@ -53,6 +53,38 @@
       <?php } ?>
       </div>
     </div>
+
+    <table class="table table-bordered">
+      <h2>人気ランキング</h2>
+      <thead class="thead-light">
+        <tr>
+          <th>順位</th>
+          <th>商品名</th>
+          <th>価格</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach($rankings as $key => $ranking){ ?>
+          <tr>
+            <td><?php print(h($key+1)); ?>位</td>
+            <td><?php print(h($ranking['name'])); ?></td>
+            <td><?php print(number_format(h($ranking['price']))); ?>円</td>
+            <td>
+              <?php if(h($ranking['stock']) > 0){ ?>
+                <form action="index_add_cart.php" method="post">
+                  <input type="submit" value="カートに追加" class="btn btn-primary btn-block">
+                  <input type="hidden" name="item_id" value="<?php print(h($ranking['item_id'])); ?>">
+                  <input type="hidden" name="token" value="<?php print $token ?>">
+                </form>
+              <?php } else { ?>
+                <p class="text-danger">現在売り切れです。</p>
+              <?php } ?>
+            </td>
+          </tr>
+        <?php } ?>
+      </tbody>
+    </table>
   </div>
   
 </body>
