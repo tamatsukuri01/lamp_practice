@@ -15,7 +15,29 @@ $user = get_login_user($db);
 
 $sort = get_get('sort');
 
-$items = get_open_items($db, $sort);
+if(get_get('page_id')) {
+  $now = $_GET['page_id'];
+} else {
+  $now = 1;
+}
+
+
+$offset = ($now - 1) * MAX_VIEW;
+
+$count = get_all_count_items($db);
+
+$total_pages = ceil($count / MAX_VIEW);
+
+$limit = MAX_VIEW;
+
+$items = get_open_items($db,$limit,$offset,$sort);
+
+$page_ini = ($offset +1);
+if(count($items) === MAX_VIEW) {
+  $page_fin = ($offset + MAX_VIEW);
+} else {
+  $page_fin =$count;
+}
 
 $rankings = get_ranking_item($db);
 

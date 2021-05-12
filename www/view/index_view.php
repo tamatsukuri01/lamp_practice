@@ -34,7 +34,7 @@
               <?php print(h($item['name'])); ?>
             </div>
             <figure class="card-body">
-              <img class="card-img" src="<?php print(IMAGE_PATH . h($item['image'])); ?>">
+              <img class="card-img " style="width:400px; height:300px;" src="<?php print(IMAGE_PATH . h($item['image'])); ?>">
               <figcaption>
                 <?php print(number_format(h($item['price']))); ?>円
                 <?php if(h($item['stock']) > 0){ ?>
@@ -53,6 +53,19 @@
       <?php } ?>
       </div>
     </div>
+
+    <div>
+    <p>
+      <?php print $count. '件中'.$page_ini. "〜" .$page_fin. "件目の商品"; ?>
+    </p>
+    <?php for($i = 1; $i <= $total_pages; $i++) { 
+        if ($i == $now) { 
+          echo "<span>$now</span>"; 
+        } else { 
+          echo "<a href='?page_id=$i'>$i</a>";
+        }
+    } ?>
+  </div>
 
     <table class="table table-bordered">
       <h2>人気ランキング</h2>
