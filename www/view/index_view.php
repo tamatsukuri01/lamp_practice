@@ -62,7 +62,7 @@
         if ($i == $now) { 
           echo "<span>$now</span>"; 
         } else { 
-          echo "<a href='?page_id=$i'>$i</a>";
+          echo "<a href='?page_id=$i&sort=$sort'>$i</a>";
         }
     } ?>
   </div>

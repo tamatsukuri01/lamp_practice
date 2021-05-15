@@ -28,16 +28,15 @@ $count = get_all_count_items($db);
 
 $total_pages = ceil($count / MAX_VIEW);
 
-$limit = MAX_VIEW;
-
-$items = get_open_items($db,$limit,$offset,$sort);
+$items = get_open_items($db,$offset,$sort);
 
 $page_ini = ($offset +1);
-if(count($items) === MAX_VIEW) {
-  $page_fin = ($offset + MAX_VIEW);
-} else {
-  $page_fin =$count;
-}
+$page_fin = min($count, $now * MAX_VIEW);
+// if(count($items) === MAX_VIEW) {
+//   $page_fin = ($offset + MAX_VIEW);
+// } else {
+//   $page_fin =$count;
+// }
 
 $rankings = get_ranking_item($db);
 
