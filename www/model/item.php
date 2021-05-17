@@ -23,8 +23,9 @@ function get_item($db, $item_id)
   return fetch_query($db, $sql, [$item_id]);
 }
 
-function get_items($db, $is_open = false, $sort = null)
+function get_items($db,$is_open = false,$offset = null, $sort = null)
 {
+  $params = [];
   $sql = '
     SELECT
       item_id, 
@@ -39,7 +40,7 @@ function get_items($db, $is_open = false, $sort = null)
   ';
   if ($is_open === true) {
     $sql .= '
-      WHERE status = 1   
+      WHERE status = 1 
     ';
   }
   if($sort === 'new' || $sort === '') {
@@ -47,28 +48,50 @@ function get_items($db, $is_open = false, $sort = null)
     ORDER BY created DESC
     ';
   } 
-  if ($sort === 'cheap') {
+  elseif ($sort === 'cheap') {
     $sql .= '
     ORDER BY price ASC
     ';
   }
-  if ($sort === 'high') {
+  elseif ($sort === 'high') {
     $sql .= '
     ORDER BY price DESC
     ';
   }
+  if($offset !== null) {
+    $params = [MAX_VIEW,$offset]; 
+    $sql .='
+    LIMIT  ?
+    OFFSET  ?
+    ';
+  }
+    
+  
+  return fetch_all_query($db, $sql,$params);
+}
 
-  return fetch_all_query($db, $sql);
+function get_all_count_items($db)
+{
+  $sql="
+    SELECT 
+      count(*) 
+    FROM 
+      items
+    WHERE 
+      status = 1
+    ";
+    $result =  fetch_all_query($db, $sql);
+    return $result[0]['count(*)'];
 }
 
 function get_all_items($db)
 {
-  return get_items($db);
+  return get_items($db,false);
 }
 
-function get_open_items($db,$sort)
+function get_open_items($db,$offset,$sort)
 {
-  return get_items($db, true,$sort);
+  return get_items($db,true,$offset,$sort);
 }
 
 function get_ranking_item($db) 
