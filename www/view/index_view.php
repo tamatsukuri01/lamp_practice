@@ -34,7 +34,7 @@
               <?php print(h($item['name'])); ?>
             </div>
             <figure class="card-body">
-              <img class="card-img " style="width:400px; height:300px;" src="<?php print(IMAGE_PATH . h($item['image'])); ?>">
+              <img class="card-img " style="width:100%; height:300px;" src="<?php print(IMAGE_PATH . h($item['image'])); ?>">
               <figcaption>
                 <?php print(number_format(h($item['price']))); ?>円
                 <?php if(h($item['stock']) > 0){ ?>
@@ -54,18 +54,44 @@
       </div>
     </div>
 
-    <div>
-    <p>
-      <?php print $count. '件中'.$page_ini. "〜" .$page_fin. "件目の商品"; ?>
-    </p>
-    <?php for($i = 1; $i <= $total_pages; $i++) { 
-        if ($i == $now) { 
-          echo "<span>$now</span>"; 
-        } else { 
-          echo "<a href='?page_id=$i&sort=$sort'>$i</a>";
-        }
-    } ?>
-  </div>
+    <nav aria-label="Page-Navigation ">
+      <h4 class="text-center">
+        <?php print $count. '件中'.$page_first. "〜" .$page_last. "件目の商品"; ?>
+      </h4>
+      <ul class="pagination pagination-lg justify-content-center">
+        <?php if($now_page > 1) { ?>
+          <li class="page-item"><a class="page-link" href="?page_id=1&sort=<?php print $sort; ?>">&laquo</a></li>
+        <?php } else {?>
+          <li class="page-item disabled"><a class="page-link">&laquo</a></li>
+        <?php } ?>
+
+        <?php if($now_page > 1) { ?>
+          <li class="page-item"><a class="page-link" href="?page_id=<?php print($now_page - 1); ?>&sort=<?php print $sort; ?>">前へ</a></li>
+        <?php } else {?>
+          <li class="page-item disabled"><span class="page-link">前へ</span></li>
+        <?php } ?>
+
+        <?php for($i = 1; $i <= $total_pages; $i++) { ?>
+          <?php if ($i === $now_page) { ?>
+            <li class="page-item active"><span class="page-link"><?php print $now_page; ?></span> </li> 
+          <?php } else {  ?>
+            <li class="page-item"><a class="page-link" href="?page_id=<?php print $i; ?>&sort=<?php print $sort; ?>"><?php print $i; ?></a></li> 
+          <?php  } ?>
+        <?php } ?>
+
+        <?php if($now_page < $total_pages) { ?>
+          <li class="page-item"><a class="page-link" href="?page_id=<?php print ($now_page + 1); ?>&sort=<?php print $sort; ?>">次へ</a></li>
+        <?php } else {?>
+          <li class="page-item disabled"><span class="page-link">次へ</span></li>
+        <?php } ?>
+        
+        <?php if($now_page < $total_pages) { ?>
+          <li class="page-item"><a class="page-link" href="?page_id=<?php print $total_pages; ?>&sort=<?php print $sort; ?>">&raquo</a></li>
+        <?php } else {?>
+          <li class="page-item disabled"><span class="page-link">&raquo</span></li>
+        <?php } ?>
+      </ul>
+    </nav>
 
     <table class="table table-bordered">
       <h2>人気ランキング</h2>
