@@ -11,7 +11,7 @@
     <h1>ログイン</h1>
 
     <?php include VIEW_PATH . 'templates/messages.php'; ?>
-
+    <div class="row">
     <form method="post" action="login_process.php" class="login_form mx-auto">
       <div class="form-group">
         <label for="name">名前: </label>
@@ -24,6 +24,19 @@
       <input type="submit" value="ログイン" class="btn btn-primary">
       <input type="hidden" name="token" value="<?php print $token ?>">
     </form>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-4">
+        <h5>管理者としてログイン</h5>
+        <p>名前：admin</p>
+        <p>パスワード：admin</p>
+      </div>
+      <div class="col-md-4">
+        <h5>ユーザーとしてログイン</h5>
+        <p>名前：sampleuser</p>
+        <p>パスワード：password</p>
+      </div>
+    </div>
   </div>
 </body>
 </html>
